@@ -335,7 +335,7 @@ func (p *Proposer) ProposeOp(ctx context.Context) error {
 
 // ProposeTxLists proposes the given transaction lists to TaikoL1 contract.
 func (p *Proposer) ProposeTxLists(ctx context.Context, txListsBytes [][]byte) []error {
-	txCandidates := make([]txmgr.TxCandidate, len(txListsBytes))
+	txCandidates := make([]txmgr.TxCandidate, 0)
 
 	for i, txListBytes := range txListsBytes {
 		compressedTxListBytes, err := utils.Compress(txListBytes)
@@ -355,7 +355,7 @@ func (p *Proposer) ProposeTxLists(ctx context.Context, txListsBytes [][]byte) []
 			break
 		}
 
-		txCandidates[i] = *candidate
+		txCandidates = append(txCandidates, *candidate)
 	}
 
 	return p.txSender.SendAndWaitDetailed("proposeBlock", txCandidates...)
